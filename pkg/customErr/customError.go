@@ -1,5 +1,7 @@
 package customErr
 
+import "errors"
+
 type CustomError struct {
 	Message    string `json:"message"`
 	StatusCode int    `json:"status"`
@@ -10,6 +12,15 @@ func (e CustomError) Error() string {
 }
 func (e CustomError) Status() int {
 	return e.StatusCode
+}
+
+func GetCode(err error) int {
+	var cerr *CustomError
+	ok := errors.As(err, &cerr)
+	if !ok {
+		return 0
+	}
+	return cerr.StatusCode
 }
 
 func NewBadRequestError(message string) CustomError {
